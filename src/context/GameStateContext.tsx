@@ -1,25 +1,91 @@
-import React, { createContext, useState, ReactNode } from "react";
-import { GameState, GameStateContextType } from "../types/game";
+"use client";
 
-export const GameStateContext = createContext<GameStateContextType | undefined>(
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useShipData } from "./ShipDataContext";
+import { GameState, GameStateContextType, BoardState } from "../types/game";
+
+const GameStateContext = createContext<GameStateContextType | undefined>(
   undefined
 );
 
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
-  const initialBoardState = Array(10).fill(Array(10).fill("empty"));
+  const { shipData, loading, error } = useShipData();
+
+  const initializeBoardState = (): BoardState => {
+    const boardState: BoardState = Array(10)
+      .fill(null)
+      .map(() => Array(10).fill("empty"));
+
+    if (shipData) {
+      shipData.layout.forEach(({ ship, positions }) => {
+        positions.forEach(([x, y]) => {
+          boardState[y][x] = "ship";
+        });
+      });
+    }
+
+    return boardState;
+  };
+
+  const initializeShipTypes = () => {
+    const shipTypes: string[][] = Array(10)
+      .fill(null)
+      .map(() => Array(10).fill(""));
+
+    if (shipData) {
+      shipData.layout.forEach(({ ship, positions }) => {
+        positions.forEach(([x, y]) => {
+          shipTypes[y][x] = ship;
+        });
+      });
+    }
+
+    return shipTypes;
+  };
+
   const [gameState, setGameState] = useState<GameState>({
-    boardState: initialBoardState,
+    boardState: initializeBoardState(),
+    shipTypes: initializeShipTypes(),
     playerHits: [],
     shipsSunk: [],
     gameOver: false,
   });
 
-  const makeMove = (position: [number, number]) => {
-    // Implement move logic here
+  useEffect(() => {
+    if (!loading && shipData) {
+      setGameState({
+        boardState: initializeBoardState(),
+        shipTypes: initializeShipTypes(),
+        playerHits: [],
+        shipsSunk: [],
+        gameOver: false,
+      });
+    }
+  }, [shipData, loading]);
+
+  const makeMove = (x: number, y: number) => {
+    const newBoardState = gameState.boardState.map((row) => [...row]);
+    if (newBoardState[x][y] === "ship") {
+      newBoardState[x][y] = "hit";
+    } else {
+      newBoardState[x][y] = "miss";
+    }
+    setGameState((prevState) => ({
+      ...prevState,
+      boardState: newBoardState,
+    }));
   };
 
   const checkGameOver = () => {
-    return gameState.shipsSunk.length === 5;
+    return (
+      gameState.shipsSunk.length === (shipData ? shipData.layout.length : 0)
+    );
   };
 
   return (
@@ -30,7 +96,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useGameState = () => {
-  const context = React.useContext(GameStateContext);
+  const context = useContext(GameStateContext);
   if (!context) {
     throw new Error("useGameState must be used within a GameStateProvider");
   }

@@ -1,4 +1,12 @@
-import React, { createContext, useState, useEffect, ReactNode } from "react";
+"use client";
+
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { ShipData } from "../types/ship";
 
 type ShipDataContextType = {
@@ -7,7 +15,7 @@ type ShipDataContextType = {
   error: string | null;
 };
 
-export const ShipDataContext = createContext<ShipDataContextType | undefined>(
+const ShipDataContext = createContext<ShipDataContextType | undefined>(
   undefined
 );
 
@@ -43,7 +51,7 @@ export const ShipDataProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useShipData = () => {
-  const context = React.useContext(ShipDataContext);
+  const context = useContext(ShipDataContext);
   if (!context) {
     throw new Error("useShipData must be used within a ShipDataProvider");
   }

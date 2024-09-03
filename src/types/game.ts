@@ -1,4 +1,4 @@
-export type CellState = "hit" | "miss" | "empty";
+export type CellState = "empty" | "hit" | "miss" | "ship";
 
 // Represents the state of the game board as a 2D array of cell states
 export type BoardState = CellState[][];
@@ -9,11 +9,12 @@ export type GameState = {
   playerHits: [number, number][]; // Array of positions where the player has hit
   shipsSunk: string[]; // Array of ship names that have been completely sunk
   gameOver: boolean; // Boolean indicating whether the game is over
+  shipTypes: string[][];
 };
 
 // Context type for managing the game state within a context provider
 export type GameStateContextType = {
   gameState: GameState; // The current game state
-  makeMove: (position: [number, number]) => void; // Function to handle player moves
+  makeMove: (x: number, y: number) => void; // Function to handle player moves
   checkGameOver: () => boolean; // Function to check if the game is over
 };
