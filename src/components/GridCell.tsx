@@ -2,11 +2,12 @@
 
 import React from "react";
 import Image from "next/image";
+import { CellState } from "@/types/game";
 
 type GridCellProps = {
   x: number;
   y: number;
-  state: "empty" | "ship" | "hit" | "miss";
+  state: CellState;
   onClick: (x: number, y: number) => void;
   shipType?: string;
 };
@@ -19,6 +20,9 @@ const GridCell: React.FC<GridCellProps> = ({
   onClick,
 }) => {
   const handleClick = () => {
+    if (state === "hit" || state === "miss" || state === "sunk") {
+      return;
+    }
     onClick(x, y);
   };
 
@@ -37,10 +41,18 @@ const GridCell: React.FC<GridCellProps> = ({
             height={40}
           />
         );
-      case "ship":
+      case "sunk":
+        // return (
+        //   <Image
+        //     src={`/assets/${shipType}Shape.png`}
+        //     alt={shipType}
+        //     width={40}
+        //     height={40}
+        //   />
+        // );
         return (
           <Image
-            src={`/assets/${shipType}Shape.png`} // Dynamically use the correct ship image
+            src={`/assets/carrierShape.png`}
             alt={shipType}
             width={40}
             height={40}
@@ -48,7 +60,8 @@ const GridCell: React.FC<GridCellProps> = ({
         );
       case "empty":
         return <div className="bg-gray-100 w-full h-full"></div>;
-
+      case "ship":
+        return <div className="bg-gray-100 w-full h-full"></div>;
       default:
         return null;
     }

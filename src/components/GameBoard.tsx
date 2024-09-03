@@ -11,7 +11,7 @@ const GameBoard: React.FC = () => {
       {gameState.boardState.map((row, rowIndex) =>
         row.map((cellState, colIndex) => {
           const shipType =
-            cellState === "ship"
+            cellState === "ship" || cellState === "hit"
               ? gameState.shipTypes[rowIndex][colIndex]
               : undefined;
           return (

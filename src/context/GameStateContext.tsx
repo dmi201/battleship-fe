@@ -50,19 +50,24 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const [gameState, setGameState] = useState<GameState>({
-    boardState: initializeBoardState(),
-    shipTypes: initializeShipTypes(),
+    boardState: Array(10).fill(Array(10).fill("empty")),
+    shipTypes: Array(10).fill(Array(10).fill("")),
     playerHits: [],
+    playerMisses: [],
     shipsSunk: [],
     gameOver: false,
   });
 
   useEffect(() => {
     if (!loading && shipData) {
+      const newBoardState = initializeBoardState();
+      const newShipTypes = initializeShipTypes();
+
       setGameState({
-        boardState: initializeBoardState(),
-        shipTypes: initializeShipTypes(),
+        boardState: newBoardState,
+        shipTypes: newShipTypes,
         playerHits: [],
+        playerMisses: [],
         shipsSunk: [],
         gameOver: false,
       });
@@ -70,22 +75,56 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
   }, [shipData, loading]);
 
   const makeMove = (x: number, y: number) => {
+    if (
+      gameState.boardState[x][y] === "hit" ||
+      gameState.boardState[x][y] === "miss" ||
+      gameState.boardState[x][y] === "sunk"
+    ) {
+      return;
+    }
+
     const newBoardState = gameState.boardState.map((row) => [...row]);
+    const newPlayerHits = [...gameState.playerHits];
+    const newPlayerMisses = [...gameState.playerMisses];
+    const newShipsSunk = [...gameState.shipsSunk];
+
     if (newBoardState[x][y] === "ship") {
       newBoardState[x][y] = "hit";
+      newPlayerHits.push([x, y]);
+
+      const shipType = gameState.shipTypes[x][y];
+      const shipPositions =
+        shipData?.layout.find((ship) => ship.ship === shipType)?.positions ||
+        [];
+
+      const isSunk = shipPositions.every(
+        ([sx, sy]) => newBoardState[sy][sx] === "hit"
+      );
+
+      if (isSunk) {
+        newShipsSunk.push(shipType);
+
+        shipPositions.forEach(([sx, sy]) => {
+          newBoardState[sy][sx] = "sunk";
+        });
+      }
     } else {
       newBoardState[x][y] = "miss";
+      newPlayerMisses.push([x, y]);
     }
+
     setGameState((prevState) => ({
       ...prevState,
       boardState: newBoardState,
+      playerHits: newPlayerHits,
+      playerMisses: newPlayerMisses,
+      shipsSunk: newShipsSunk,
+      gameOver: checkGameOver(newShipsSunk),
     }));
   };
 
-  const checkGameOver = () => {
-    return (
-      gameState.shipsSunk.length === (shipData ? shipData.layout.length : 0)
-    );
+  const checkGameOver = (newShipsSunk: string[]) => {
+    return newShipsSunk.length === (shipData ? shipData.layout.length : 0);
   };
 
   return (
