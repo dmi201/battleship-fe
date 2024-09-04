@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 
 type AppContextType = {
   modalVisible: boolean;
@@ -8,7 +8,7 @@ type AppContextType = {
   setNotification: (message: string) => void;
 };
 
-export const AppContext = createContext<AppContextType | undefined>(undefined);
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,8 +35,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useAppContext = () => {
-  const context = React.useContext(AppContext);
+export const useAppData = () => {
+  const context = useContext(AppContext);
   if (!context) {
     throw new Error("useAppContext must be used within an AppProvider");
   }
