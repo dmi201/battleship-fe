@@ -16,7 +16,7 @@ export default function Error({
   return (
     <div>
       <h2>Something went wrong!</h2>
-      <p>An error occurred while loading this page.</p>
+      <p>An error occurred while loading the data.</p>
       <button onClick={() => reset()}>Try Again</button>
     </div>
   );
