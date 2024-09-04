@@ -53,7 +53,7 @@ const GridCell: React.FC<GridCellProps> = ({
         return (
           <Image
             src={`/assets/carrierShape.png`}
-            alt={shipType}
+            alt={shipType ? shipType : "ship"}
             width={40}
             height={40}
           />
@@ -69,7 +69,7 @@ const GridCell: React.FC<GridCellProps> = ({
 
   return (
     <div
-      className="w-10 h-10 border flex items-center justify-center cursor-pointer"
+      className="aspect-w-1 aspect-h-1 min-h-[5vh] border flex items-center justify-center cursor-pointer"
       onClick={handleClick}
     >
       {renderCellContent()}

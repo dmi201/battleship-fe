@@ -7,7 +7,7 @@ const GameBoard: React.FC = () => {
   const { gameState, makeMove } = useGameState();
 
   return (
-    <div className="grid grid-cols-10">
+    <div className="grid grid-cols-10 gap-0 w-full min-h-[40vh] max-w-screen-lg mx-auto">
       {gameState.boardState.map((row, rowIndex) =>
         row.map((cellState, colIndex) => {
           const shipType =
