@@ -1,7 +1,17 @@
-import React, { createContext, useState, ReactNode } from "react";
+"use client";
+
+import { UserData } from "@/types/user";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 type UserContextType = {
   userName: string;
+  linkedInAccount: string;
   score: number;
   isLoggedIn: boolean;
   loading: boolean;
@@ -9,32 +19,65 @@ type UserContextType = {
   incrementScore: () => void;
   setLoading: (loading: boolean) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
+  login: () => void;
+  logout: () => void;
 };
 
-export const UserContext = createContext<UserContextType | undefined>(
-  undefined
-);
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [userName, setUserName] = useState("");
+  const [linkedInAccount, setLinkedInAccount] = useState("");
   const [score, setScore] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const handleSetUserName = (name: string) => setUserName(name);
   const incrementScore = () => setScore((prevScore) => prevScore + 1);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("/api/user");
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        const data: UserData = await response.json();
+        setUserName(data.userName);
+        setLinkedInAccount(data.linkedInAccount);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const login = async () => {
+    setIsLoggedIn(true);
+  };
+
+  const logout = () => {
+    setUserName("");
+    setLinkedInAccount("");
+    setIsLoggedIn(false);
+  };
 
   return (
     <UserContext.Provider
       value={{
         userName,
+        linkedInAccount,
         score,
         isLoggedIn,
         loading,
-        setUserName: handleSetUserName,
+        setUserName,
         incrementScore,
         setLoading,
         setIsLoggedIn,
+        login,
+        logout,
       }}
     >
       {children}
@@ -42,8 +85,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useUserContext = () => {
-  const context = React.useContext(UserContext);
+export const useUserData = () => {
+  const context = useContext(UserContext);
   if (!context) {
     throw new Error("useUserContext must be used within a UserProvider");
   }
