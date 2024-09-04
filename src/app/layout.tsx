@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "../styles/globals.css";
 import { UserProvider } from "@/context/UserContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Battleship Game",
@@ -21,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <UserProvider>
         {" "}
-        <body className={inter.className}>
+        <body className="flex flex-col min-h-screen">
           <Header />
           {children}
           <Footer />

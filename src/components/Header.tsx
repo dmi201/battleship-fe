@@ -16,7 +16,7 @@ export default function Header() {
     <header className="bg-white">
       <nav
         aria-label="Global"
-        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8"
       >
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
@@ -43,7 +43,7 @@ export default function Header() {
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
           <Link
             href="/how-to-play"
-            className="text-sm font-semibold leading-6 text-gray-900"
+            className="text-lg font-semibold leading-6 text-gray-900"
           >
             How to play
           </Link>
@@ -52,7 +52,7 @@ export default function Header() {
               {" "}
               <Link
                 href="/game"
-                className="text-sm font-semibold leading-6 text-gray-900"
+                className="text-lg font-semibold leading-6 text-gray-900"
               >
                 New game
               </Link>
@@ -63,7 +63,7 @@ export default function Header() {
           {!isLoggedIn ? (
             <button
               onClick={login}
-              className="text-sm font-semibold leading-6 text-gray-900"
+              className="text-lg font-semibold leading-6 text-white bg-accent-500  rounded-lg py-2 px-4"
             >
               Login <span aria-hidden="true">&rarr;</span>
             </button>
@@ -141,7 +141,7 @@ export default function Header() {
                 {!isLoggedIn ? (
                   <button
                     onClick={login}
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-white bg-accent-500 py-2 rounded-lg hover:bg-gray-800"
                   >
                     Login
                   </button>

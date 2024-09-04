@@ -2,28 +2,57 @@
 
 import Image from "next/image";
 import { useUserData } from "@/context/UserContext";
+import Cta from "@/components/Cta";
+import LinkedInButton from "@/components/LinkedinButton";
+import { Suspense } from "react";
+import Loading from "./loading";
 
-export default function UserPage() {
+const UserContent = () => {
   const { userName, linkedInAccount, isLoggedIn, score } = useUserData();
 
   return (
-    <>
-      {isLoggedIn && (
-        <>
-          {" "}
-          <h1>User details</h1>
-          <Image
-            src={"/assets/user.png"}
-            alt="User Profile"
-            width={100}
-            height={100}
-            className="rounded-full my-2"
-          />
-          <p>{userName}</p>
-          <p>{linkedInAccount}</p>
-          <p>{score}</p>
-        </>
-      )}
-    </>
+    <main className="flex-grow">
+      {" "}
+      <div className="flex flex-col items-center justify-center text-center min-h-[80vh] bg-primary-800 text-white p-4 ">
+        {isLoggedIn ? (
+          <>
+            <h1 className="font-heading text-4xl sm:text-5xl mb-4">
+              Some details about you, dear player!
+            </h1>
+            <Image
+              src={"/assets/user.png"}
+              alt="User Profile"
+              width={150}
+              height={150}
+              className="rounded-full shadow-lg mb-4"
+            />
+            <p className="text-xl font-semibold mb-4">{userName}</p>
+            <div className="bg-primary-100 rounded-xl mb-4">
+              {" "}
+              <LinkedInButton
+                isLoggedIn={isLoggedIn}
+                linkedInAccount={linkedInAccount}
+              />
+            </div>
+            <p className="text-2xl sm:text-3xl text-accent-500 mb-4 ">
+              Score: {score}
+            </p>
+          </>
+        ) : (
+          <>
+            {" "}
+            <Cta />
+          </>
+        )}
+      </div>
+    </main>
+  );
+};
+
+export default function UserPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <UserContent />
+    </Suspense>
   );
 }

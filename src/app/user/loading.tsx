@@ -1,7 +1,5 @@
+import LoadingSpinner from "@/components/LoadingSpinner";
+
 export default function Loading() {
-  return (
-    <div>
-      <p>Loading the user...</p>
-    </div>
-  );
+  return <LoadingSpinner />;
 }
