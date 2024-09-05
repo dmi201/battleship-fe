@@ -2,10 +2,16 @@
 
 import { useGameState } from "@/context/GameStateContext";
 import { useUserData } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 export default function GameInfo() {
   const { gameState } = useGameState();
-  const { score } = useUserData();
+  const { score, isLoggedIn, loading } = useUserData();
+  const router = useRouter();
+
+  if (!loading && !isLoggedIn) {
+    router.push("/");
+  }
 
   const totalHits = gameState.playerHits.length;
   const totalMisses = gameState.playerMisses.length;
