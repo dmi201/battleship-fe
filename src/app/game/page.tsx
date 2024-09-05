@@ -1,7 +1,15 @@
-import GameBoard from "@/components/GameBoard";
-import GameInfo from "@/components/GameInfo";
+import dynamic from "next/dynamic";
+
 import { GameStateProvider } from "@/context/GameStateContext";
 import { ShipDataProvider } from "@/context/ShipDataContext";
+
+const GameInfo = dynamic(() => import("@/components/GameInfo"), {
+  ssr: false,
+});
+
+const GameBoard = dynamic(() => import("@/components/GameBoard"), {
+  ssr: false,
+});
 
 export default function GamePage() {
   return (

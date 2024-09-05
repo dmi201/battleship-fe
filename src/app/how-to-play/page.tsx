@@ -1,7 +1,9 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
+import dynamic from "next/dynamic";
+const ShipCard = dynamic(() => import("@/components/ShipCard"));
+
 import Image from "next/image";
-import ShipCard from "@/components/ShipCard";
 import { ShipDataProvider, useShipData } from "@/context/ShipDataContext";
 import Cta from "@/components/Cta";
 import LoadingSpinner from "@/components/LoadingSpinner";
