@@ -8,14 +8,27 @@ import React, {
   ReactNode,
 } from "react";
 import { useShipData } from "./ShipDataContext";
-import { GameState, GameStateContextType, BoardState } from "../types/game";
+import { GameState, BoardState } from "../types/game";
+import { useUserData } from "./UserContext";
+
+type GameStateContextType = {
+  gameState: GameState; // The current game state
+  makeMove: (x: number, y: number) => void;
+  checkGameOver: (newShipsSunk: string[]) => boolean;
+  calculateMaxScore: (
+    totalMoves: number,
+    shipsSunk: number,
+    maxShips: number
+  ) => number | null;
+};
 
 const GameStateContext = createContext<GameStateContextType | undefined>(
   undefined
 );
 
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
-  const { shipData, loading, error } = useShipData();
+  const { shipData, loading } = useShipData();
+  const { setScore } = useUserData();
 
   const initializeBoardState = (): BoardState => {
     const boardState: BoardState = Array(10)
@@ -124,11 +137,52 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const checkGameOver = (newShipsSunk: string[]) => {
-    return newShipsSunk.length === (shipData ? shipData.layout.length : 0);
+    if (gameState.gameOver) {
+      return true;
+    }
+
+    const isGameOver =
+      newShipsSunk.length === (shipData ? shipData.layout.length : 0);
+
+    if (isGameOver) {
+      const totalMoves =
+        gameState.playerHits.length + gameState.playerMisses.length;
+      const score = calculateMaxScore(totalMoves, newShipsSunk.length);
+
+      if (score !== null) {
+        setScore(score);
+      }
+
+      setGameState((prevState) => ({
+        ...prevState,
+        gameOver: true,
+      }));
+    }
+
+    return isGameOver;
+  };
+
+  const calculateMaxScore = (
+    totalMoves: number,
+    shipsSunk: number,
+    maxShips: number = 5
+  ) => {
+    if (shipsSunk < maxShips) return 0;
+    const score = maxShips * 100 - totalMoves;
+
+    const maxScore = parseInt(localStorage.getItem("maxScore") || "0", 10);
+
+    if (score > maxScore) {
+      localStorage.setItem("maxScore", score.toString());
+    }
+
+    return score;
   };
 
   return (
-    <GameStateContext.Provider value={{ gameState, makeMove, checkGameOver }}>
+    <GameStateContext.Provider
+      value={{ gameState, makeMove, checkGameOver, calculateMaxScore }}
+    >
       {children}
     </GameStateContext.Provider>
   );

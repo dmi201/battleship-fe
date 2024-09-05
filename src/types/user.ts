@@ -4,7 +4,7 @@ export type UserContextType = {
   score: number;
   isLoggedIn: boolean;
   setUserName: (name: string) => void;
-  incrementScore: () => void;
+  setScore: () => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
 };
 

@@ -12,10 +12,3 @@ export type GameState = {
   gameOver: boolean; // Boolean indicating whether the game is over
   shipTypes: string[][];
 };
-
-// Context type for managing the game state within a context provider
-export type GameStateContextType = {
-  gameState: GameState; // The current game state
-  makeMove: (x: number, y: number) => void; // Function to handle player moves
-  checkGameOver: (newShipsSunk: string[]) => boolean; // Function to check if the game is over
-};

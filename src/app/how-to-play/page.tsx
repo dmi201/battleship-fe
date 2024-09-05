@@ -1,14 +1,17 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import React, { Suspense } from "react";
 import Image from "next/image";
 import ShipCard from "@/components/ShipCard";
 import { ShipDataProvider, useShipData } from "@/context/ShipDataContext";
 import Cta from "@/components/Cta";
-import Loading from "./loading";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ErrorCard from "@/components/ErrorCard";
 
 const HowToPlayContent = () => {
-  const { shipData } = useShipData();
+  const { shipData, loading, error } = useShipData();
+
+  if (loading) <LoadingSpinner />;
+  if (error) <ErrorCard message={error} />;
 
   return (
     <main className="flex-grow">
@@ -52,9 +55,7 @@ const HowToPlayContent = () => {
 export default function HowToPlayPage() {
   return (
     <ShipDataProvider>
-      <Suspense fallback={<Loading />}>
-        <HowToPlayContent />
-      </Suspense>
+      <HowToPlayContent />
     </ShipDataProvider>
   );
 }

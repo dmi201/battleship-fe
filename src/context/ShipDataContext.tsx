@@ -37,7 +37,7 @@ export const ShipDataProvider = ({ children }: { children: ReactNode }) => {
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError("An unknown error occurred");
+          setError("An unknown error occurred when fetching the ship data");
         }
       } finally {
         setLoading(false);

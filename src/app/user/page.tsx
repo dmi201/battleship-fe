@@ -4,11 +4,15 @@ import Image from "next/image";
 import { useUserData } from "@/context/UserContext";
 import Cta from "@/components/Cta";
 import LinkedInButton from "@/components/LinkedinButton";
-import { Suspense } from "react";
-import Loading from "./loading";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ErrorCard from "@/components/ErrorCard";
 
 const UserContent = () => {
-  const { userName, linkedInAccount, isLoggedIn, score } = useUserData();
+  const { userName, linkedInAccount, isLoggedIn, score, loading, error } =
+    useUserData();
+
+  if (loading) <LoadingSpinner />;
+  if (error) <ErrorCard message={error} />;
 
   return (
     <main className="flex-grow">
@@ -35,7 +39,7 @@ const UserContent = () => {
               />
             </div>
             <p className="text-2xl sm:text-3xl text-accent-500 mb-4 ">
-              Score: {score}
+              Max score: {score}
             </p>
           </>
         ) : (
@@ -50,9 +54,5 @@ const UserContent = () => {
 };
 
 export default function UserPage() {
-  return (
-    <Suspense fallback={<Loading />}>
-      <UserContent />
-    </Suspense>
-  );
+  return <UserContent />;
 }
