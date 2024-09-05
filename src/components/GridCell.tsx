@@ -42,17 +42,14 @@ const GridCell: React.FC<GridCellProps> = ({
           />
         );
       case "sunk":
-        // return (
-        //   <Image
-        //     src={`/assets/${shipType}Shape.png`}
-        //     alt={shipType}
-        //     width={40}
-        //     height={40}
-        //   />
-        // );
+        //TODO: fix shipType undefined problem
         return (
           <Image
-            src={`/assets/carrierShape.png`}
+            src={
+              shipType
+                ? `/assets/${shipType}Shape.png`
+                : `/assets/carrierShape.png`
+            }
             alt={shipType ? shipType : "ship"}
             width={40}
             height={40}

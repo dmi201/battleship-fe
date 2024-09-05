@@ -15,9 +15,11 @@ type UserContextType = {
   score: number;
   isLoggedIn: boolean;
   loading: boolean;
+  error: string | null;
   setUserName: (name: string) => void;
-  incrementScore: () => void;
+  setScore: (score: number) => void;
   setLoading: (loading: boolean) => void;
+  setError: (error: string) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   login: () => void;
   logout: () => void;
@@ -33,8 +35,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const incrementScore = () => setScore((prevScore) => prevScore + 1);
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -45,11 +45,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         const data: UserData = await response.json();
         setUserName(data.userName);
         setLinkedInAccount(data.linkedInAccount);
+        const maxScore = parseInt(localStorage.getItem("maxScore") || "0", 10);
+        if (maxScore) {
+          setScore(maxScore);
+        }
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError("An unknown error occurred");
+          setError("An unknown error occurred when fetching the user data");
         }
       } finally {
         setLoading(false);
@@ -77,9 +81,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         score,
         isLoggedIn,
         loading,
+        error,
         setUserName,
-        incrementScore,
+        setScore,
         setLoading,
+        setError,
         setIsLoggedIn,
         login,
         logout,

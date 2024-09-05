@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
+//Mock user data
 const userData = {
   userName: "Mihail Iulian Dinu",
   linkedInAccount: "https://www.linkedin.com/in/mihail-iulian-dinu/",

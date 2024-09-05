@@ -3,7 +3,7 @@
 import GridCell from "./GridCell";
 import { useGameState } from "@/context/GameStateContext";
 
-const GameBoard: React.FC = () => {
+export default function GameBoard() {
   const { gameState, makeMove } = useGameState();
 
   return (
@@ -28,6 +28,4 @@ const GameBoard: React.FC = () => {
       )}
     </div>
   );
-};
-
-export default GameBoard;
+}

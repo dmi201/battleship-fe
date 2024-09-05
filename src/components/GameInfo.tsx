@@ -1,15 +1,17 @@
 "use client";
 
-import React from "react";
 import { useGameState } from "@/context/GameStateContext";
+import { useUserData } from "@/context/UserContext";
 
-const GameInfo: React.FC = () => {
+export default function GameInfo() {
   const { gameState } = useGameState();
+  const { score } = useUserData();
 
   const totalHits = gameState.playerHits.length;
   const totalMisses = gameState.playerMisses.length;
   const totalMoves = totalHits + totalMisses;
   const totalSunkShips = gameState.shipsSunk.length;
+
   const isGameOver = gameState.gameOver;
 
   return (
@@ -32,10 +34,19 @@ const GameInfo: React.FC = () => {
             <span className="font-medium">Total Moves:</span>
             <span className="font-bold">{totalMoves} / 100</span>
           </p>
-          <p className="flex justify-between">
-            <span className="font-medium ">Total Ships Sunk:</span>
-            <span className="font-bold">{totalSunkShips} / 5</span>
-          </p>
+
+          {isGameOver ? (
+            <p className="flex justify-between">
+              <span className="font-medium ">Score:</span>
+              <span className="font-bold">{score} </span>
+            </p>
+          ) : (
+            <p className="flex justify-between">
+              <span className="font-medium ">Total Ships Sunk:</span>
+              <span className="font-bold">{totalSunkShips} / 5</span>
+            </p>
+          )}
+
           <p className="flex justify-between">
             <span className="font-medium ">Game Status:</span>
             <span
@@ -52,6 +63,4 @@ const GameInfo: React.FC = () => {
       </div>
     </article>
   );
-};
-
-export default GameInfo;
+}
