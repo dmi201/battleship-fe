@@ -8,8 +8,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useUserData } from "@/context/UserContext";
 
 export default function Header() {
-  const { userName, isLoggedIn, login, logout, linkedInAccount } =
-    useUserData();
+  const { isLoggedIn, login, logout } = useUserData();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -49,7 +48,6 @@ export default function Header() {
           </Link>
           {isLoggedIn && (
             <>
-              {" "}
               <Link
                 href="/game"
                 className="text-lg font-semibold leading-6 text-gray-900"
@@ -69,7 +67,6 @@ export default function Header() {
             </button>
           ) : (
             <>
-              {" "}
               <Link href="/user">
                 <Image
                   src={"/assets/user.png"}
@@ -97,7 +94,11 @@ export default function Header() {
         <div className="fixed inset-0 z-10" />
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
-            <Link href="/" className="-m-1.5 p-1.5">
+            <Link
+              href="/"
+              className="-m-1.5 p-1.5"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               <span className="sr-only">Battleship</span>
               <Image
                 alt="logo"
@@ -122,15 +123,16 @@ export default function Header() {
                 <Link
                   href="/how-to-play"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   How to play
                 </Link>
                 {isLoggedIn && (
                   <>
-                    {" "}
                     <Link
                       href="/game"
                       className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      onClick={() => setMobileMenuOpen(false)}
                     >
                       New game
                     </Link>
@@ -140,15 +142,17 @@ export default function Header() {
               <div className="py-6">
                 {!isLoggedIn ? (
                   <button
-                    onClick={login}
+                    onClick={() => {
+                      login();
+                      setMobileMenuOpen(false);
+                    }}
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-white bg-accent-500 py-2 rounded-lg hover:bg-gray-800"
                   >
                     Login
                   </button>
                 ) : (
                   <>
-                    {" "}
-                    <Link href="/user">
+                    <Link href="/user" onClick={() => setMobileMenuOpen(false)}>
                       <Image
                         src={"/assets/user.png"}
                         alt="User Profile"
@@ -158,7 +162,10 @@ export default function Header() {
                       />
                     </Link>
                     <button
-                      onClick={logout}
+                      onClick={() => {
+                        logout();
+                        setMobileMenuOpen(false);
+                      }}
                       className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                     >
                       Logout
