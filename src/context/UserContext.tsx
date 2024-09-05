@@ -1,5 +1,4 @@
 "use client";
-
 import { UserData } from "@/types/user";
 import React, {
   createContext,
@@ -25,6 +24,12 @@ type UserContextType = {
   logout: () => void;
 };
 
+type UserLSType = {
+  userName: string;
+  linkedInAccount: string;
+  isLoggedIn: string;
+};
+
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
@@ -34,43 +39,67 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [userData, setUserData] = useState<string>("");
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("/api/user");
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-        const data: UserData = await response.json();
-        setUserName(data.userName);
-        setLinkedInAccount(data.linkedInAccount);
-        const maxScore = parseInt(localStorage.getItem("maxScore") || "0", 10);
-        if (maxScore) {
-          setScore(maxScore);
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unknown error occurred when fetching the user data");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      const { userName, linkedInAccount, isLoggedIn } =
+        JSON.parse(storedUserData);
+      setUserData(storedUserData);
+      setUserName(userName);
+      setLinkedInAccount(linkedInAccount);
+      setIsLoggedIn(isLoggedIn === "true");
+    } else {
+      fetchUserData();
+    }
   }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch("/api/user");
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+      const data: UserData = await response.json();
+      setUserName(data.userName);
+      setLinkedInAccount(data.linkedInAccount);
+      const maxScore = parseInt(localStorage.getItem("maxScore") || "0", 10);
+      if (maxScore) {
+        setScore(maxScore);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred when fetching the user data");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveUserData = (userData: UserLSType) => {
+    localStorage.setItem("userData", JSON.stringify(userData));
+  };
 
   const login = async () => {
     setIsLoggedIn(true);
+    if (!userData) {
+      saveUserData({
+        userName: userName,
+        linkedInAccount: linkedInAccount,
+        isLoggedIn: "true",
+      });
+    }
   };
 
   const logout = () => {
     setUserName("");
     setLinkedInAccount("");
+    setScore(0);
     setIsLoggedIn(false);
+    localStorage.removeItem("userData");
   };
 
   return (
