@@ -1,9 +1,13 @@
 "use client";
 
+import dynamic from "next/dynamic";
+const LinkedInButton = dynamic(() => import("@/components/LinkedinButton"));
+const Cta = dynamic(() => import("@/components/Cta"), {
+  ssr: false,
+});
+
 import Image from "next/image";
 import { useUserData } from "@/context/UserContext";
-import Cta from "@/components/Cta";
-import LinkedInButton from "@/components/LinkedinButton";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorCard from "@/components/ErrorCard";
 
