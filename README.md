@@ -53,3 +53,5 @@ If you have any questions, feedback, or just want to say hello, you can reach ou
 # Email: iuliadinu201@gmail.com
 
 # LinkedIn: (https://www.linkedin.com/in/mihail-iulian-dinu/)
+
+# release v1.0.0
