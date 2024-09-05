@@ -31,6 +31,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [score, setScore] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const incrementScore = () => setScore((prevScore) => prevScore + 1);
 
@@ -45,7 +46,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setUserName(data.userName);
         setLinkedInAccount(data.linkedInAccount);
       } catch (err) {
-        setError(err.message);
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }
