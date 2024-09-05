@@ -17,5 +17,5 @@ export type GameState = {
 export type GameStateContextType = {
   gameState: GameState; // The current game state
   makeMove: (x: number, y: number) => void; // Function to handle player moves
-  checkGameOver: () => boolean; // Function to check if the game is over
+  checkGameOver: (newShipsSunk: string[]) => boolean; // Function to check if the game is over
 };

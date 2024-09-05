@@ -34,7 +34,11 @@ export const ShipDataProvider = ({ children }: { children: ReactNode }) => {
         const data: ShipData = await response.json();
         setShipData(data);
       } catch (err) {
-        setError(err.message);
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }
